@@ -10,8 +10,8 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyCharacterMap;
@@ -266,7 +266,7 @@ public class GeckoViewPLugin extends Fragment implements GeckoSession.Navigation
 
     GeckoResult<GeckoSession.SessionState> saveState;
     public void SaveState(){
-            if (mWebView == null || mWebView.getSession()==null)
+        if (mWebView == null || mWebView.getSession()==null)
             return;
 //        saveState = mWebView.getSession().saveState();
     }
@@ -719,8 +719,14 @@ public class GeckoViewPLugin extends Fragment implements GeckoSession.Navigation
     public GeckoResult<AllowOrDeny> onLoadRequest(@NonNull GeckoSession session, @NonNull LoadRequest request) {
 //        GeckoResult<AllowOrDeny> geckoResult = new GeckoResult<AllowOrDeny>();
 //        geckoResult.complete(AllowOrDeny.ALLOW);
-//        Log.d(LOG_TAG, "request uri: " + request.uri);
+        Log.d(LOG_TAG, "[GeckoSession.NavigationDelegate.onLoadRequest] request uri: " + request.uri);
 //        return  geckoResult;
+        if (UnityCallback==null)
+            return null;
+        final Activity a = UnityPlayer.currentActivity;
+        a.runOnUiThread(new Runnable() {public void run() {
+            UnityCallback.OnLoadRequest(request.target, request.uri, request.triggerUri, request.isRedirect, request.isDirectNavigation, request.hasUserGesture);
+        }});
         return null;
     }
 
