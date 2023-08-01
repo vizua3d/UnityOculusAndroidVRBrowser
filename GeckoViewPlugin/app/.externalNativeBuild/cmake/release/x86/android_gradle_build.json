@@ -2,18 +2,18 @@
 {
 	"buildFiles" : 
 	[
-		"/Users/iansp/Documents/BlueAlloy/Android/PrivateUnityAndroidVRARBrowser/GeckoViewPlugin/app/CMakeLists.txt"
+		"G:/VIZUA/github/vizua3d/UnityOculusAndroidVRBrowser/GeckoViewPlugin/app/CMakeLists.txt"
 	],
 	"cleanCommands" : 
 	[
-		"/Users/iansp/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/iansp/Documents/BlueAlloy/Android/PrivateUnityAndroidVRARBrowser/GeckoViewPlugin/app/.externalNativeBuild/cmake/release/x86 --target clean"
+		"C:\\Users\\sebtr\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build G:\\VIZUA\\github\\vizua3d\\UnityOculusAndroidVRBrowser\\GeckoViewPlugin\\app\\.externalNativeBuild\\cmake\\release\\x86 --target clean"
 	],
 	"toolchains" : 
 	{
-		"6297440457684848847" : 
+		"792937865" : 
 		{
-			"cCompilerExecutable" : "/Users/iansp/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang",
-			"cppCompilerExecutable" : "/Users/iansp/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
+			"cCompilerExecutable" : "C:/Users/sebtr/AppData/Local/Android/Sdk/ndk/15.2.4203891/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe",
+			"cppCompilerExecutable" : "C:/Users/sebtr/AppData/Local/Android/Sdk/ndk/15.2.4203891/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe"
 		}
 	}
 }
