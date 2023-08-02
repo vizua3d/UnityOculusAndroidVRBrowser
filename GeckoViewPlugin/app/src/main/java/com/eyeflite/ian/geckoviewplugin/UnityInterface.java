@@ -7,6 +7,7 @@ public interface UnityInterface {
     public void updateProgress(int progress );
     public void CanGoBack(boolean able);
     public void CanGoForward(boolean able);
+    public void OnSetToken3dverse(String token);
     public void OnLoadRequest(int target, String uri, String triggerUri, boolean isRedirect, boolean isDirectNavigation, boolean hasUserGesture);
     public void OnPageVisited(String url, String lastUrl);
     public void ChangeKeyboardVisiblity(boolean show);

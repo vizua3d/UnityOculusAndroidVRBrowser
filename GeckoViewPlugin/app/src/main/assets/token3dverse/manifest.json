@@ -1,0 +1,22 @@
+{
+  "manifest_version": 2,
+  "name": "token3dverse",
+  "version": "1.0",
+  "description": "Read 3dverse token.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "token3dverse@3dverse.com"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.3dverse.com/*"],
+      "js": ["token3dverse.js"]
+    }
+  ],
+  "permissions": [
+    "nativeMessaging",
+    "nativeMessagingFromContent",
+    "geckoViewAddons"
+  ]
+}

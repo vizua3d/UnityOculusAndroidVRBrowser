@@ -37,6 +37,10 @@ import org.mozilla.geckoview.GeckoSessionSettings;
 import org.mozilla.geckoview.ScreenLength;
 import org.mozilla.geckoview.WebRequestError;
 import org.mozilla.geckoview.WebResponse;
+import org.mozilla.geckoview.WebExtension;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -60,6 +64,8 @@ public class GeckoViewPLugin extends Fragment implements GeckoSession.Navigation
     }
     private HashMap<SessionTypes, GeckoSession> mSessions;
 
+    private static final String EXTENSION_LOCATION = "resource://android/assets/token3dverse/";
+    private static final String EXTENSION_ID = "token3dverse@3dverse.com";
 
     public BytesBuffer GetSurfaceBytesBuffer(int width, int height, int quality){
         return mWebView.GetSurfaceBytesBuffer(width, height, quality);
@@ -149,7 +155,6 @@ public class GeckoViewPLugin extends Fragment implements GeckoSession.Navigation
             }
         }, delay);
         Log.d("AndroidUnity","Add tap called! at x:" + x + " y: "+y);
-
     }
 
 
@@ -398,12 +403,12 @@ public class GeckoViewPLugin extends Fragment implements GeckoSession.Navigation
 
 
     // Unity method
-  public static void PassStaticSurface(final Surface surface ){
-//      Instance.mWebView.UnityCallback = Instance.UnityCallback;
-      Instance.mWebView.mWidth=Width;
-      Instance.mWebView.mHeight=Height;
-      Instance.mWebView.mSurface = surface;
-  }
+    public static void PassStaticSurface(final Surface surface ){
+//        Instance.mWebView.UnityCallback = Instance.UnityCallback;
+        Instance.mWebView.mWidth=Width;
+        Instance.mWebView.mHeight=Height;
+        Instance.mWebView.mSurface = surface;
+    }
 
     // Unity method
     public void PassSurface(final Surface surface){
@@ -425,14 +430,12 @@ public class GeckoViewPLugin extends Fragment implements GeckoSession.Navigation
     }
 
     public void SetBrowserUserAgent(String agent, boolean reload){
-
         int agentVal = ParseUserAgentString(agent);
         GeckoSession session = mSessions.get(SessionTypes.BROWSER);
         session.getSettings().setUserAgentMode(agentVal);
 
         if (reload)
             mWebView.getSession().reload();
-
     }
 
 
@@ -479,7 +482,6 @@ public class GeckoViewPLugin extends Fragment implements GeckoSession.Navigation
             put(SessionTypes.BROWSER, InitNewSession(mRuntime));
             put(SessionTypes.YOUTUBE, InitNewSession(mRuntime));
         }};
-
     }
 
     private void InitNewRuntime(View view){
@@ -488,7 +490,6 @@ public class GeckoViewPLugin extends Fragment implements GeckoSession.Navigation
         runtimeSettings.inputAutoZoomEnabled(false);
         mRuntime = GeckoRuntime.create(view.getContext(),runtimeSettings.build());
         mRuntime.setDelegate(this);
-
     }
 
     private GeckoSession InitNewSession(GeckoRuntime runtime){
@@ -505,11 +506,59 @@ public class GeckoViewPLugin extends Fragment implements GeckoSession.Navigation
         session.setHistoryDelegate(this);
         session.getTextInput().setDelegate(this);
         session.setProgressDelegate( this);
-        return session;
 
+        WebExtension.MessageDelegate messageDelegate =
+                new WebExtension.MessageDelegate() {
+                    @Nullable
+                    @Override
+                    public GeckoResult<Object> onMessage(
+                            final @NonNull String nativeApp,
+                            final @NonNull Object message,
+                            final @NonNull WebExtension.MessageSender sender) {
+                        if (message instanceof JSONObject) {
+                            JSONObject json = (JSONObject) message;
+                            try {
+                                if (json.has("type") && "token3dverse".equals(json.getString("type"))) {
+                                    String payload = json.getString("payload");
+                                    Log.d(LOG_TAG, "Found token3dverse: " + payload);
+                                    if (UnityCallback==null){
+                                        Log.d(LOG_TAG, "Failed to pass token3dverse to unity because UnityCallback is null");
+                                        return null;
+                                    }
+
+                                    final Activity a = UnityPlayer.currentActivity;
+                                    a.runOnUiThread(new Runnable() {public void run() {
+                                        UnityCallback.OnSetToken3dverse(payload);
+                                    }});
+                                }
+                            } catch (JSONException ex) {
+                                Log.e("MessageDelegate", "Invalid token3dverse", ex);
+                            }
+                        }
+                        return null;
+                    }
+                };
+        final Activity a = UnityPlayer.currentActivity;
+
+        a.runOnUiThread(new Runnable() {public void run() {
+            // Let's make sure the extension is installed
+            mRuntime
+                    .getWebExtensionController()
+                    .ensureBuiltIn(EXTENSION_LOCATION, EXTENSION_ID)
+                    .accept(
+                            // Set delegate that will receive messages coming from this extension.
+                            extension ->
+                                    session
+                                            .getWebExtensionController()
+                                            .setMessageDelegate(extension, messageDelegate, "browser"),
+                            // Something bad happened, let's log an error
+                            e -> Log.e("MessageDelegate", "Error registering extension", e));
+        }});
+
+        return session;
     }
-//
-//
+
+
 //    private void StartMemoryCheckEvery(int seconds){
 //
 //        final Handler handler = new Handler();
@@ -527,8 +576,6 @@ public class GeckoViewPLugin extends Fragment implements GeckoSession.Navigation
 //
 //            }
 //        }, delay);
-
-
 //    }
 
 
@@ -970,7 +1017,4 @@ public class GeckoViewPLugin extends Fragment implements GeckoSession.Navigation
 
         return mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
     }
-
-
-
 }
