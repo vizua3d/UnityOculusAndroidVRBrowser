@@ -60,7 +60,7 @@ public class GeckoViewPLugin extends Fragment implements GeckoSession.Navigation
     private static AudioManager mAudioManager;
 
     enum SessionTypes{
-        YOUTUBE, BROWSER,
+        YOUTUBE, BROWSER, ProdLabs3dverse, ProdConsole3dverse, DevLabs3dverse, DevLanLabs3dverse, DevConsole3dverse
     }
     private HashMap<SessionTypes, GeckoSession> mSessions;
 
@@ -128,6 +128,21 @@ public class GeckoViewPLugin extends Fragment implements GeckoSession.Navigation
             case "browser":
             default:
                 newSession = mSessions.get(SessionTypes.BROWSER);
+                break;
+            case "prodlabs3dverse":
+                newSession = mSessions.get(SessionTypes.ProdLabs3dverse);
+                break;
+            case "prodconsole3dverse":
+                newSession = mSessions.get(SessionTypes.ProdConsole3dverse);
+                break;
+            case "devlabs3dverse":
+                newSession = mSessions.get(SessionTypes.DevLabs3dverse);
+                break;
+            case "devlanlabs3dverse":
+                newSession = mSessions.get(SessionTypes.DevLanLabs3dverse);
+                break;
+            case "devconsole3dverse":
+                newSession = mSessions.get(SessionTypes.DevConsole3dverse);
                 break;
         }
         return newSession;
@@ -479,8 +494,13 @@ public class GeckoViewPLugin extends Fragment implements GeckoSession.Navigation
 
         Log.i(LOG_TAG, "CREATING sessions hashmap");
         mSessions = new HashMap<SessionTypes, GeckoSession>() {{
-            put(SessionTypes.BROWSER, InitNewSession(mRuntime));
             put(SessionTypes.YOUTUBE, InitNewSession(mRuntime));
+            put(SessionTypes.BROWSER, InitNewSession(mRuntime));
+            put(SessionTypes.ProdLabs3dverse, InitNewSession(mRuntime));
+            put(SessionTypes.ProdConsole3dverse, InitNewSession(mRuntime));
+            put(SessionTypes.DevLabs3dverse, InitNewSession(mRuntime));
+            put(SessionTypes.DevLanLabs3dverse, InitNewSession(mRuntime));
+            put(SessionTypes.DevConsole3dverse, InitNewSession(mRuntime));
         }};
     }
 

@@ -10,7 +10,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.3dverse.com/*"],
+      "matches": ["*://*.3dverse.com/*", "*://*.3dverse.dev/*", "*://*.v3d.lan/*"],
       "js": ["token3dverse.js"]
     }
   ],
