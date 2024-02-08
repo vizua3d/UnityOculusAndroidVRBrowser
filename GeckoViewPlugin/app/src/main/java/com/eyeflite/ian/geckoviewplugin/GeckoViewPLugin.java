@@ -43,6 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class GeckoViewPLugin extends Fragment implements GeckoSession.NavigationDelegate, GeckoSession.ContentDelegate, GeckoSession.HistoryDelegate, GeckoSession.TextInputDelegate, GeckoSession.ProgressDelegate, GeckoRuntime.Delegate {
     static String FRAGMENT_TAG = "AndroidUnityMainGL";
@@ -786,11 +787,15 @@ public class GeckoViewPLugin extends Fragment implements GeckoSession.Navigation
     public GeckoResult<AllowOrDeny> onLoadRequest(@NonNull GeckoSession session, @NonNull LoadRequest request) {
 //        GeckoResult<AllowOrDeny> geckoResult = new GeckoResult<AllowOrDeny>();
 //        geckoResult.complete(AllowOrDeny.ALLOW);
-        Log.d(LOG_TAG, "[GeckoSession.NavigationDelegate.onLoadRequest] request uri: " + request.uri);
+        Log.d(LOG_TAG, "[GeckoSession.NavigationDelegate.onLoadRequest] request uri: " + request.uri + " request trigger uri: " + request.triggerUri);
 //        return  geckoResult;
         if (UnityCallback==null)
             return null;
         final Activity a = UnityPlayer.currentActivity;
+        String triggerUri = request.triggerUri;
+        if(Objects.isNull(request.triggerUri)) {
+            triggerUri = request.uri;
+        }
         a.runOnUiThread(new Runnable() {public void run() {
             UnityCallback.OnLoadRequest(request.target, request.uri, request.triggerUri, request.isRedirect, request.isDirectNavigation, request.hasUserGesture);
         }});
